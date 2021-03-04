@@ -62,6 +62,74 @@ def one_point_load_raw_data(_db_params, _exp_id, show=True):
             print(co2_min)
         print(co2_min_array)
 
+        temp_min_array = []
+        temp_max_array = []
+
+        for (p, t1, t2) in zip(points, t_start, t_stop):
+            comm_str = "select time, data from raw_data where exp_id = {} and sensor_id = {} " \
+                       "and time > '{}' and time < '{}'".format(
+                _exp_id, 5, t1, t2)
+            resp = cur.execute(comm_str)
+            temp_rows = cur.fetchall()
+            print(len(temp_rows))
+            temp_array = [x['data'] for x in temp_rows]
+            if temp_array:
+                temp_min = min(temp_array)
+                temp_max = max(temp_array)
+            else:
+                temp_min = 0
+                temp_max = 0
+                print('point {} lost, t={}'.format(p, t1))
+            temp_min_array.append(temp_min)
+            temp_max_array.append(temp_max)
+
+            print(temp_min)
+        print(temp_min_array)
+
+        hum_min_array = []
+
+        for (p, t1, t2) in zip(points, t_start, t_stop):
+            comm_str = "select time, data from raw_data where exp_id = {} and sensor_id = {} " \
+                       "and time > '{}' and time < '{}'".format(
+                _exp_id, 4, t1, t2)
+            resp = cur.execute(comm_str)
+            hum_rows = cur.fetchall()
+            print(len(hum_rows))
+            hum_array = [x['data'] for x in hum_rows]
+            if hum_array:
+                hum_min = min(hum_array)
+            else:
+                hum_min = 0
+                print('point {} lost, t={}'.format(p, t1))
+            hum_min_array.append(hum_min)
+
+            print(hum_min)
+        print(hum_min_array)
+
+        press_min_array = []
+        press_max_array = []
+
+        for (p, t1, t2) in zip(points, t_start, t_stop):
+            comm_str = "select time, data from raw_data where exp_id = {} and sensor_id = {} " \
+                       "and time > '{}' and time < '{}'".format(
+                _exp_id, 2, t1, t2)
+            resp = cur.execute(comm_str)
+            press_rows = cur.fetchall()
+            print(len(press_rows))
+            press_array = [x['data'] for x in press_rows]
+            if press_array:
+                press_min = min(press_array)
+                press_max = max(press_array)
+            else:
+                press_min = 0
+                press_max = 0
+                print('point {} lost, t={}'.format(p, t1))
+            press_min_array.append(press_min)
+            press_max_array.append(press_max)
+
+            print(press_min)
+        print(press_min_array)
+
     # строит графики
         if show:
             # 2D subplots plot
@@ -72,10 +140,18 @@ def one_point_load_raw_data(_db_params, _exp_id, show=True):
 
             axs[0].plot(t_start, co2_min_array, "-.og", label='raw co2 data')
             axs[0].grid()
-
             axs[0].plot(t_start, co2_max_array, "-vr", label='raw co2 data')
 
+            axs[1].plot(t_start, temp_min_array, "-.og", label='raw temp data')
+            axs[1].grid()
+            axs[1].plot(t_start, temp_max_array, "-vr", label='raw temp data')
 
+            axs[2].plot(t_start, hum_min_array, "-.og", label='raw hum data')
+            axs[2].grid()
+
+            axs[3].plot(t_start, press_min_array, "-.og", label='raw press data')
+            axs[3].grid()
+            axs[3].plot(t_start, press_max_array, "-vr", label='raw press data')
 
             axs[0].set(ylabel='CO2, ppmv')
             axs[3].set(xlabel='time')
