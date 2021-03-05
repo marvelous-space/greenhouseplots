@@ -19,8 +19,8 @@ def one_point_load_raw_data(_db_params, _exp_id, show=True):
     print(days)
   #  t_start = []
    # t_stop = []
-    d1 = days[0]
-    d2 = days[1]
+    d1 = days[1]
+    d2 = days[2]
     for d in [d1, d2]:
         comm_str = "select point_id, start_time, end_time from exp_data where date(start_time) = date('{}');".format(d)
         resp = cur.execute(comm_str)
@@ -135,8 +135,8 @@ def one_point_load_raw_data(_db_params, _exp_id, show=True):
             # 2D subplots plot
             # fig, axs = plt.subplots(4, 1, sharex=True, figsize=[12, 9])
             fig, axs = plt.subplots(4, 1, figsize=[12, 9])
-            #fig.suptitle("exp={} point={} start_time={}".format(
-             #   _exp_id, point_id, t_start))
+            fig.suptitle("exp={} start_time={}".format(
+               _exp_id, t_start))
 
             axs[0].plot(t_start, co2_min_array, "-.og", label='raw co2 data')
             axs[0].grid()
@@ -154,6 +154,9 @@ def one_point_load_raw_data(_db_params, _exp_id, show=True):
             axs[3].plot(t_start, press_max_array, "-vr", label='raw press data')
 
             axs[0].set(ylabel='CO2, ppmv')
+            axs[1].set(ylabel='temp, °C')
+            axs[2].set(ylabel='hum, %')
+            axs[3].set(ylabel='Pressure, kPa')
             axs[3].set(xlabel='time')
 
             plt.show()
